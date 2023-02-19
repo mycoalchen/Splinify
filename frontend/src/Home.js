@@ -9,6 +9,7 @@ export default function Home() {
         </div>
         {songCards}
         <AddSong/>
+        <Generate/>
     </div>);
 
     function onAddSong() {
@@ -21,6 +22,20 @@ export default function Home() {
             <div>
                 <button onClick={() => onAddSong()} className="text-white font-bold text-4xl">
                     +
+                </button>
+            </div>
+        )
+    }
+
+    function Generate() {
+
+    }
+
+    function Generate() {
+        return (
+            <div> 
+                <button onClick={() => Generate()} className="my-8 text-white font-bold bg-spotify-green px-3 py-3 text-4xl rounded-lg">
+                    Generate
                 </button>
             </div>
         )
