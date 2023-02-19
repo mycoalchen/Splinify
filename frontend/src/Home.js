@@ -78,6 +78,11 @@ export default function Home() {
                 </div >
                 YOUR SONGS:
                     {results.map((result) => {
+                        // axios.get(`https://api.spotify.com/v1/search?q=track%3A${result}&type=track`, { headers: { 'Authorization': 'Bearer ' + spotifyToken } }).then((value) => {
+                        //     const newId = value.data.tracks.items[0].id;
+
+                        //     _setTrackIds(newTrackIds);
+                        // })
                         return(<div className="text-center">
                             {result}
                         </div>);

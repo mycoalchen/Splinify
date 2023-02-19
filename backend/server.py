@@ -48,12 +48,14 @@ def playlist(song1, song2, n,songtoembed, knn, goodsongs):
     emb2 = songtoembed[song2]
     points = np.array([(x/n)*emb2 +(1-(x/n))*emb1 for x in range(0,n+1)])
     neighbors = knn.kneighbors(points, return_distance=False)
-    lis = []
+    lis = [song1]
     for arr in neighbors:
         for x in arr:
             if(not x in lis):
                 lis.append(x)
                 break
+    if(not song2 in lis):
+        lis.append(song2)
     return [goodsongs[x] for x in lis]
 def manylink(arr, n,songtoembed, knn, goodsongs):
     lis = []
