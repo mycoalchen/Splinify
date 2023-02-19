@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
+
 export default function Songcard() {
-
-    useEffect(() => {
-        var client_id = 'CLIENT_ID';
-        var client_secret = 'CLIENT_SECRET';
-
-        var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            headers: {
-                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-            },
-            form: {
-                grant_type: 'client_credentials'
-            },
-            json: true
-        };
-
-        request.post(authOptions, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                var token = body.access_token;
-            }
-        });
-    });
-
     // 1 is input, 2 is searching, 3 is found
     const [type, setType] = useState(1);
     const [spotifyToken, setSpotifyToken] = useState("");
     const [title, setTitle] = useState("");
-    // const [artist, setArtists] = useState("");
+
+    useEffect(() => {
+        var client_id = process.env.REACT_APP_CLIENT_ID;
+        var client_secret = process.env.REACT_APP_CLIENT_SECRET;
+        
+        var authOptions = {
+            url: 'https://accounts.spotify.com/api/token',
+            headers: {
+              'Authorization': 'Basic ' + btoa(client_id + ':' + client_secret).toString('base64')
+            },
+            form: {
+              grant_type: 'client_credentials'
+            },
+            json: true
+          };
+        
+        axios.post(authOptions, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                setSpotifyToken(body.access_token);
+                console.log("Success!");
+            } else console.log(error);
+        });
+    }, []);
 
     const config = {
-        headers: { 'Authorization': 'Bearer ' + token }
+        headers: { 'Authorization': 'Bearer ' + spotifyToken }
     }
 
     function handleFindSong() {
