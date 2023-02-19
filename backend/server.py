@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 @app.route('/service', methods=['POST'])
 def service():
+    print("called service")
     data = json.loads(request.data)#
     songs = data['names']
     dance = data['danceability']
@@ -53,7 +54,7 @@ def playlist(song1, song2, n,songtoembed, knn, goodsongs):
 def manylink(arr, n,songtoembed, knn, goodsongs):
     lis = []
     for x in range(len(arr)-1):
-        lis.extend(playlist(arr[x],arr[x+1],n)[:-1],songtoembed, knn, goodsongs)
+        lis.extend(playlist(arr[x],arr[x+1],n,songtoembed, knn, goodsongs)[:-1])
     if(arr[-1] not in lis):
         lis.append(arr[-1])
     return lis
