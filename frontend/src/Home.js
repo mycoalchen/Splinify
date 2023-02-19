@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Page2 from "./Page2";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Home() {
-    const [songCards, setSongsCards] = useState([(<Songcard />), (<Songcard />)]);
+
     const [spotifyToken, setSpotifyToken] = useState("");
-    const [trackIds, setTrackids] = useState([]);
+    const [songCards, setSongsCards] = useState([]);
+    const [trackIds, setTrackIds] = useState([]);
+    const [results, setResults] = useState([]);
+    const [resultsEmpty, setResultsEmpty] = useState(true);
+
+    function getTrackIds() {
+        return trackIds;
+    }
     const [queryParams, setQueryParams] = useState({
         names: [],
         danceability: [],
         energy: [],
         valence: [],
-        n: 4
+        n: 6
     }
     );
 
@@ -46,24 +55,41 @@ export default function Home() {
                 }
             }).then((response) => {
                 setSpotifyToken(response.data.access_token);
+                setSongsCards([]);
             });
     }, []);
 
-    return (<div className="flex flex-col items-center bg-spotify-darkgray h-screen">
-        <div className="sticky top-0 w-screen z-100 text-center p-6 text-4xl bg-black text-white font-bold drop-shadow-spotify-green drop-shadow-lg mb-8">
-            Splinify
-        </div>
-        {songCards}
-        <div className="flex flex-row space-x-2 items-between">
-            <AddSong />
-            {/* <SubtractSong /> */}
-        </div>
-        <Generate />
-    </div>);
+    return (<>{
+        resultsEmpty ?
+            <div className="flex flex-col items-center bg-spotify-darkgray h-screen">
+                <div className="sticky top-0 w-screen z-100 text-center p-6 text-4xl bg-black text-white font-bold drop-shadow-spotify-green drop-shadow-lg mb-8" >
+                    Splinify
+                </div >
+                {songCards}
+                < div className="flex flex-row space-x-2 items-between" >
+                    <AddSong />
+                </div >
+                <Generate />
+            </div >
+            : <>
+            <div className="w-screen h-screen bg-black text-white flex flex-col justify-center align-center text-center">
+            <div className="sticky top-0 w-screen z-100 text-center p-6 text-4xl bg-black text-white font-bold drop-shadow-spotify-green drop-shadow-lg mb-8" >
+                    Splinify
+                </div >
+                YOUR SONGS:
+                    {results.map((result) => {
+                        return(<div className="text-center">
+                            {result}
+                        </div>);
+                    })}
+            </div>
+            </>
+    }
+    </>);
 
     function onAddSong() {
         let newSongCards = [...songCards];
-        newSongCards.push(<Songcard />);
+        newSongCards.push(<Songcard configVal={{ 'Authorization': 'Bearer ' + spotifyToken }} _getTrackIds={getTrackIds} _setTrackIds={setTrackIds} />);
         setSongsCards(newSongCards);
     }
     function AddSong() {
@@ -90,11 +116,34 @@ export default function Home() {
         )
     }
     async function OnGenerate() {
-        let newQueryParams = {};
-        for (const trackId in trackIds) {
-            const response = await axios.get(`https://api.spotify.com/v1/audio-features/${trackId}`);
-            
+        let newQueryParams = {
+            names: [],
+            danceability: [],
+            energy: [],
+            valence: [],
+            n: 5
+        };
+        for (let i = 0; i < trackIds.length; i++) {
+            const trackId = trackIds[i];
+            const configVal = { 'Authorization': 'Bearer ' + spotifyToken };
+            const nameResponse = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, { headers: configVal });
+            const name = nameResponse.data.name;
+            const features = await axios.get(`https://api.spotify.com/v1/audio-features/${trackId}`, { headers: configVal });
+            newQueryParams.names.push(name);
+            newQueryParams.danceability.push(features.data.danceability);
+            newQueryParams.energy.push(features.data.energy);
+            newQueryParams.valence.push(features.data.valence);
         }
+        setQueryParams(newQueryParams);
+        console.log("nqp:", newQueryParams);
+        axios.post("http://127.0.0.1:5000/service", newQueryParams, {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }).then((response) => {
+            setResults(response.data.playlist);
+            setResultsEmpty(false);
+        },);
     }
 
     function Generate() {
@@ -107,11 +156,18 @@ export default function Home() {
         )
     }
 
-    function Songcard() {
+    function Results({ songs }) {
+        return (
+            <div className="w-3/5 origin-[50%_50%] b-0 h-3/5 ml-50% mr-50vh bg-black absolute">
+                ah
+            </div>
+        );
+    }
+
+    function Songcard({ configVal, _getTrackIds, _setTrackIds }) {
         const [type, setType] = useState(1);
         const [title, setTitle] = useState("");
         const [artist, setArtist] = useState("");
-        const [trackId, setTrackId] = useState("");
 
         function TitleArtistDrawer() {
             if (type === 2) {
@@ -124,19 +180,14 @@ export default function Home() {
             } else return <></>;
         }
 
-        const config = {
-            headers: { 'Authorization': 'Bearer ' + spotifyToken }
-        }
-
         function handleFindSong() {
-            axios.get(`https://api.spotify.com/v1/search?q=track%3A${title}&type=track`, config).then((value) => {
-                setTrackId(value.data.tracks.items[0].id);
+            axios.get(`https://api.spotify.com/v1/search?q=track%3A${title}&type=track`, { headers: configVal }).then((value) => {
                 setTitle(value.data.tracks.items[0].name);
                 setArtist(value.data.tracks.items[0].artists[0].name);
                 setType(2);
-                let newTrackIds = [...trackIds];
-                newTrackIds.push(trackId);
-                setTrackids(newTrackIds);
+                let newTrackIds = [..._getTrackIds()];
+                newTrackIds.push(value.data.tracks.items[0].id);
+                _setTrackIds(newTrackIds);
             })
         }
 
