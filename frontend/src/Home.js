@@ -8,7 +8,10 @@ export default function Home() {
             Splinify
         </div>
         {songCards}
-        <AddSong/>
+        <div className="flex flex-row space-x-2 items-between">
+            <AddSong/>
+            <SubtractSong/>
+        </div>
         <Generate/>
     </div>);
 
@@ -20,13 +23,26 @@ export default function Home() {
     function AddSong() {
         return (
             <div>
-                <button onClick={() => onAddSong()} className="text-white font-bold text-4xl">
+                <button onClick={() => onAddSong()} className="text-white font-bold text-4xl hover:scale-110">
                     +
                 </button>
             </div>
         )
     }
-
+    function onSubtractSong() {
+        let newSongCards = [...songCards];
+        newSongCards.pop(<Songcard/>);
+        setSongsCards(newSongCards);
+    }
+    function SubtractSong() {
+        return (
+            <div>
+                <button onClick={() => onSubtractSong()} className="text-white font-bold text-4xl hover:scale-125 my-">
+                    -
+                </button>
+            </div>
+        )
+    }
     function Generate() {
 
     }
@@ -34,7 +50,7 @@ export default function Home() {
     function Generate() {
         return (
             <div> 
-                <button onClick={() => Generate()} className="my-8 text-white font-bold bg-spotify-green px-3 py-3 text-4xl rounded-lg">
+                <button onClick={() => Generate()} className="my-8 text-white font-bold bg-spotify-green px-2 py-3 text-3xl hover:scale-110 rounded-lg iterms-center">
                     Generate
                 </button>
             </div>

@@ -76,7 +76,7 @@ export default function Songcard() {
         <TitleArtistDrawer/>
         }
         <div className="flex flex-row justify-end">
-            <input type="button" value="Find song" onClick={() => handleFindSong()} className="bg-spotify-green cursor-pointer my-2 px-2 rounded-lg" />
+            <input type="button" value="Find Song" onClick={() => handleFindSong()} className="bg-spotify-green cursor-pointer my-2 px-2 rounded-lg hover:scale-110" />
         </div>
         {/* <input type="text" name="Artist" placeholder="Artist" className="songCardInput"/> */}
     </form>);
