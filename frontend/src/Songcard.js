@@ -8,27 +8,39 @@ export default function Songcard() {
     const [spotifyToken, setSpotifyToken] = useState("");
     const [title, setTitle] = useState("");
 
+    const serialize = function (obj) {
+        var str = [];
+        for (var p in obj) {
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        }
+        return str.join("&");
+    }
+
     useEffect(() => {
         var client_id = process.env.REACT_APP_CLIENT_ID;
         var client_secret = process.env.REACT_APP_CLIENT_SECRET;
-        
-        var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            headers: {
-              'Authorization': 'Basic ' + btoa(client_id + ':' + client_secret).toString('base64')
-            },
-            form: {
-              grant_type: 'client_credentials'
-            },
-            json: true
-          };
-        
-        axios.post(authOptions, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                setSpotifyToken(body.access_token);
-                console.log("Success!");
-            } else console.log(error);
-        });
+
+        axios.defaults.baseURL = '';
+        axios.post('https://accounts.spotify.com/api/token',
+            serialize({
+                grant_type: 'client_credentials'
+            }),
+            {
+                headers: {
+                    'Authorization': 'Basic ' + btoa(client_id + ':' + client_secret),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                json: true,
+
+            }, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    setSpotifyToken(body.access_token);
+                }
+            }).then((resonse) => {
+                console.log(resonse);
+            });
     }, []);
 
     const config = {
