@@ -13,7 +13,7 @@ root.render(
 
 export default function Home() {
   return (
-    <section className="text-gray-600 body-font font-montserrat">
+    <section className="text-gray-600">
       ...
     </section>
   );

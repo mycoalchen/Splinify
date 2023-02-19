@@ -10,6 +10,9 @@ module.exports = {
         'spotify-darkgray': '#181818'
       }
     },
+    fontFamily: {
+      'sans': ["Gotham"]
+    }
   },
   plugins: [],
 }

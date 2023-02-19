@@ -56,7 +56,10 @@ export default function Songcard() {
     return (<form className="text-white px-4 m-4 h-16 w-3/5 bg-black flex flex-row justify-between">
         <input type="text" name="Title" placeholder="Title" className="songCardInput"
             value={title} onChange={(e) => setTitle(e.target.value)} />
-        <input type="button" value="Find song" onClick={() => handleFindSong()} className="bg-spotify-darkgray cursor-pointer my-2 px-2" />
+        <div className="flex flex-row justify-end">
+        <input type="button" value="Find song" onClick={() => handleFindSong()} className="bg-spotify-green cursor-pointer my-2 px-2" />
+
+        </div>
         {/* <input type="text" name="Artist" placeholder="Artist" className="songCardInput"/> */}
     </form>);
 }

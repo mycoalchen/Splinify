@@ -2,14 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
-
+@import url('../public/spotify-font/GothamMedium.ttf');
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Gotham';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
@@ -24,5 +21,13 @@ code {
 @layer components {
   .songCardInput {
     @apply bg-black text-white
+  }
+}
+
+@layer base {
+  @font-face {
+    font-family: Gotham;
+    font-weight: medium;
+    src: url(./spotify-font/GothamMedium.ttf) format("ttf");
   }
 }
