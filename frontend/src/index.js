@@ -11,6 +11,13 @@ root.render(
   </React.StrictMode>
 );
 
+export default function Home() {
+  return (
+    <section className="text-gray-600 body-font font-montserrat">
+      ...
+    </section>
+  );
+}
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
