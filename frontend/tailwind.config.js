@@ -11,7 +11,7 @@ module.exports = {
       }
     },
     fontFamily: {
-      'sans': ["Gotham"]
+      gotham: ["Gotham"]
     }
   },
   plugins: [],
